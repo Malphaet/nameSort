@@ -91,7 +91,8 @@ try:
 					dprint("Moving from '{}' to '{}'".format(fro,to))
 					if not args.dry:
 						os.renames(fro,to)
-						scpt.write("mv {} {} \n".format(to,fro))
+						if args.reverse:
+							scpt.write("mv {} {} \n".format(to,fro))
 				else:
 					raise ValueError
 			else:
