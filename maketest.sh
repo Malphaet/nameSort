@@ -1,0 +1,9 @@
+mkdir test
+touch test/bla-ultra.jpg
+touch test/ooman-very.png
+touch test/cant-touch.jpg
+touch test/ultra-man.jpg
+touch test/ooman-touch.jpg
+touch test/cant-begood.png
+touch test/ooman-venom.jpg
+mkdir test/shouldntmove

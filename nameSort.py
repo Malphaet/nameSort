@@ -38,7 +38,7 @@ def dprint(p):
 ####
 # Imports
 import sys, os
-import argparse
+import argparse, importlib
 
 ###
 # Parser
@@ -55,21 +55,38 @@ parser.add_argument('--destination','-d',type=str,help='custom destination to sa
 parser.add_argument('--dry',action='store_true',help='only show actions, don\'t perform any renames')
 parser.add_argument('--verbose','-v',action='store_true',help='be verbose')
 parser.add_argument('--reverse',type=str,help='custom reverse script, to cancel everything')
+parser.add_argument('--post-scpt', type=str, help='actions to perform to a file about to be sorted', default="default")
+parser.add_argument('--format', type=str, help='format to match for a file to be sorted', default="default")
+parser.add_argument('--ignore', type=str, help='format to match for a file to be ignored', default="default")
 
-####
+##########
 # Main
-
+####
+# Import & Config
 args = parser.parse_args()
 path_to_sort=args.path
 path_to_save=args.destination
+
+# Open a file to create a reverse script
 if args.reverse:
 	scpt=open(args.reverse,"w+")
 	scpt.write("#!/bin/sh\n")
 if path_to_save==None:
 	path_to_save=path_to_sort
-dprint("Path: '"+path_to_sort+"'")
-dprint("Saving to: '{}'".format(path_to_sort))
+	
+# Try importing the functions
+try:
+	mod,path="post script",args.post_scpt
+	post_scpt=importlib.import_module(args.post_scpt).post_scpt
+	mod,path="format",args.format
+	whereto=importlib.import_module(args.format).format
+	mod,path="ignore script",args.ignore
+	ruleout=importlib.import_module(args.ignore).ignore
+except:
+	print "Error importing the {} module: {}".format(mod,path)
+	sys.exit()
 
+# Check validity of the arguments
 try:
 	if not (os.path.isdir(path_to_sort)):
 		print path_to_sort, "is not a directory"
@@ -79,6 +96,15 @@ try:
 		sys.exit()
 except :
 	print "Erreur impossible d'acceder au fichier"
+
+# Verbose intel
+dprint("Path: '"+path_to_sort+"'")
+dprint("Saving to: '{}'".format(path_to_sort))
+dprint("Format: {} - Ignore: {} - Post: {}".format(args.format,args.ignore,args.post_scpt))
+dprint("Reverse script: {} - Dry run: {}".format(args.reverse!=None,args.dry))
+
+#####
+# Main function
 
 listdir=os.listdir(path_to_sort)
 try:
