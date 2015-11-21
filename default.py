@@ -24,6 +24,7 @@ import os
 
 def post_scpt(file,destination):
 	"Actions to perform on the file name or file (copy, archive,whatever)"
+	#print file,destination
 	return file,destination
 	
 def format(file):

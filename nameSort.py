@@ -23,14 +23,6 @@
 
 ####
 # Functions
-def ruleout(f):
-	"Ruling out a file"
-	return os.path.isdir(f)
-
-def whereto(f):
-	"Where to sort a file, what name to use"
-	return f.split("-",1)
-
 def dprint(p):
 	if args.verbose:
 		print p
@@ -105,7 +97,6 @@ dprint("Reverse script: {} - Dry run: {}".format(args.reverse!=None,args.dry))
 
 #####
 # Main function
-
 listdir=os.listdir(path_to_sort)
 try:
 	for f in listdir:
@@ -113,7 +104,7 @@ try:
 			if not ruleout(os.path.join(path_to_sort,f)):
 				where,newname=whereto(f)
 				if where!=f:
-					fro,to=os.path.join(path_to_sort,f),os.path.join(path_to_save,os.path.join(where,newname))
+					fro,to=post_scpt(os.path.join(path_to_sort,f),os.path.join(path_to_save,os.path.join(where,newname)))
 					dprint("Moving from '{}' to '{}'".format(fro,to))
 					if not args.dry:
 						os.renames(fro,to)
